@@ -1,0 +1,8 @@
+{
+    "plugin": {
+        "name": "FastWan",
+        "description": "Fast text-to-video with FastWan (distilled Wan2.1-1.3B) — ~5s 480p clips in seconds on Hopper GPUs.",
+        "icon": "/plugins/tongflow-modal-fastwan.svg"
+    },
+    "env": []
+}

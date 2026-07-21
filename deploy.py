@@ -82,7 +82,7 @@ image = (
     # build (Triton) works out of the box; build SageAttention2++ from source
     # for max FP8 throughput if needed.
     .pip_install("sageattention")
-    .pip_install("tongflow==0.1.0")
+    .pip_install("tongflow==0.2.13", "fastapi[standard]")
     .env(
         {
             "FASTVIDEO_ATTENTION_BACKEND": "SAGE_ATTN",
@@ -223,3 +223,18 @@ class Inference:
         except Exception as e:  # pragma: no cover
             return TextGenVideoOutput(success=False, error=str(e))
         return TextGenVideoOutput(success=True, video=asset(raw, mime="video/mp4"))
+
+    @modal.fastapi_endpoint(method="GET", label=f"{Path(__file__).resolve().parent.name}-serve")
+    def serve(self, taskId: str = "", token: str = "", origin: str = ""):
+        from fastapi.responses import StreamingResponse
+        from tongflow import serve_stream_from_spec
+
+        return StreamingResponse(
+            serve_stream_from_spec(
+                origin, taskId, token, __file__,
+                invoke=lambda m, inp: getattr(self, m).local(inp),
+            ),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "Access-Control-Allow-Origin": "*"},
+        )
+

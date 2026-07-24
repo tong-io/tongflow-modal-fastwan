@@ -82,7 +82,7 @@ image = (
     # build (Triton) works out of the box; build SageAttention2++ from source
     # for max FP8 throughput if needed.
     .pip_install("sageattention")
-    .pip_install("tongflow==0.2.13", "fastapi[standard]")
+    .pip_install("tongflow==0.2.16", "fastapi[standard]")
     .env(
         {
             "FASTVIDEO_ATTENTION_BACKEND": "SAGE_ATTN",
